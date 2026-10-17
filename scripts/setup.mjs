@@ -119,7 +119,13 @@ export async function setup(args = process.argv.slice(2)) {
         const script = path.join(p.root, `uv-installer-${Date.now()}.${process.platform === 'win32' ? 'ps1' : 'sh'}`);
         try {
           await download(`https://astral.sh/uv/install.${process.platform === 'win32' ? 'ps1' : 'sh'}`, script);
-          if (process.platform === 'win32') invoke('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script]);
+          if (process.platform === 'win32') {
+            // PowerShell 7 exports its module paths. Windows PowerShell 5.1
+            // must build its own defaults instead of loading incompatible modules.
+            const shellEnv = { ...env };
+            for (const key of Object.keys(shellEnv)) if (key.toLowerCase() === 'psmodulepath') delete shellEnv[key];
+            invoke('powershell.exe', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script], { env: shellEnv });
+          }
           else invoke('sh', [script]);
         } finally { fs.rmSync(script, { force: true }); }
       }
