@@ -1,0 +1,45 @@
+name: Validate installers and clean setup
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
+      - name: Evidence and installer unit tests
+        run: python -B scripts/test_collect.py
+      - name: Bootstrap and launcher tests
+        run: node --test scripts/test_setup.mjs
+      - name: Validate shell syntax
+        if: runner.os != 'Windows'
+        run: bash -n install.sh
+      - name: Validate PowerShell syntax
+        shell: pwsh
+        run: |
+          $tokens = $null
+          $parseErrors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile((Join-Path $PWD 'install.ps1'), [ref]$tokens, [ref]$parseErrors) | Out-Null
+          if ($parseErrors.Count) { $parseErrors | Format-List; exit 1 }
+      - name: Clean full setup on macOS and Linux
+        if: runner.os != 'Windows'
+        run: bash install.sh --source "$GITHUB_WORKSPACE" --home "$RUNNER_TEMP/aziz-wa" --no-shortcut
+      - name: Clean full setup on Windows
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: ./install.ps1 -SourceDir $env:GITHUB_WORKSPACE -InstallDir "$env:RUNNER_TEMP\aziz-wa" -NoShortcut
