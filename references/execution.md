@@ -2,6 +2,8 @@
 
 Use capabilities already available. No particular MCP, paid service or other skill is required. Save raw output and record missing/failed checks. Respect approved registries and private data boundaries.
 
+With the complete GitHub installer, the core tools are already provisioned. Read `$AZIZ_WA_HOME/setup.json`, use `AZIZ_WA_PYTHON` for Python and `AZIZ_WA_TOOLS_DIR` for Node packages, and preserve `PLAYWRIGHT_BROWSERS_PATH`/`CHROME_PATH`. Run the managed launcher with `doctor` to diagnose failure; do not reinstall merely because system tools are absent from another terminal. [Setup](setup.md).
+
 ## Helpers
 
 `collect.py` defaults to Python standard-library offline inventory. It does not install packages, execute project scripts or read .env files. It includes package script text for inspection: review artifacts before sharing. `--registry` contacts public npm without authentication and skips unapproved scopes/detected private mappings. It inspects registry directives in user/project .npmrc, without extracting or using auth values; global/custom config outside these locations still needs agent review. `--npm-audit` is explicit because installed npm sends dependency metadata to the configured registry. Neither option fixes anything.

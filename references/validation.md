@@ -1,19 +1,26 @@
-# Validation performed
+# Validation record
 
-17 October 2026, Python 3.14 and Node 26 on macOS.
+## Version 1.1: complete installer
 
-- Skill frontmatter/scaffold validation passed using the bundled skill-creator validator.
-- 14 deterministic tests passed: npm v1/v3 exact lock resolution, workspace hoisting/overrides, pnpm unresolved-version honesty, malformed locks, no network/script execution by default, source preservation, symlink/.env exclusion, semver direction/prerelease comparison, explicit scoped lookup, private-registry exclusion, registry failure remaining unknown, advisory JSON with nonzero return, existing-evidence/skill preservation, installer idempotency, and stable installation names when a GitHub clone has a different folder name.
-- Repository collector CLI ran against the skill itself and wrote a valid inventory with no collection errors. This is a CLI smoke check, not a website audit.
-- Browser helper syntax and real Playwright/axe module loading were checked with Playwright 1.63.0 and @axe-core/playwright 4.13.0 from the existing local npm cache. A package-exports metadata issue found during this check was fixed.
-- End-to-end screenshot/axe capture could not be verified: this execution sandbox blocked launching Chrome. The helper wrote an explicit incomplete report instead of a false pass. No browser success, screen-reader test, live journey audit or website-quality result is claimed.
-- Installer behavior is verified with isolated temporary project directories. Agent discovery can depend on the host's configured skill roots and session lifecycle; restart or open a new session when necessary. The same SKILL.md is usable directly by absolute path in either agent.
+Local checks on 17 October 2026 (macOS, Node 26, Python 3.14):
 
-Repeat local checks:
+- 17 Python tests cover exact npm locks, workspace hoisting, missing/malformed metadata, read-only collection, private data exclusions, failure visibility, light installation, Windows-style copy installation, owner-checked updates and backups.
+- 15 Node tests cover platform paths, argument validation, missing-tool doctor failures, package executable resolution, managed releases/backups, unknown-folder preservation, URL validation, HTTPS/redirect/size restrictions, custom-root launcher execution, desktop-file preservation, side-effect-free plans and checksum verification before stage-two execution. The Unix-specific tests run on macOS/Linux; Windows runs the applicable tests plus its PowerShell parser and complete setup.
+- Bash syntax and ShellCheck pass. JavaScript files pass Node syntax checks. SKILL.md passes the skill-creator frontmatter/scaffold validator.
+- GitHub Actions is configured to parse the PowerShell entry point and run a clean full installation on Windows, macOS and Linux, including actual Chromium/axe diagnostics. See the current Actions run for live results; local unit tests alone do not establish clean-machine success on all platforms.
+
+Repeat the local checks:
 
 ```bash
-python3 scripts/test_collect.py
-node --check scripts/browser-audit.mjs
+python3 -B scripts/test_collect.py
+node --test scripts/test_setup.mjs
+bash -n install.sh
 ```
 
-The Markdown-first and explicit-PPTX-approval rules were reviewed in the skill instructions. No PPTX was created, because no website report has yet been audited and approved for conversion. Behavioral quality of future audits still depends on host capabilities, source/browser access and the agent's evidence review.
+The local execution sandbox blocks outbound shell downloads and direct Chrome launch, so a live complete installation cannot be certified from this local session. The installer reports incomplete if any runtime/tool/browser check fails. It never claims that failed/skipped checks passed. Cloud installation results are separate evidence and must be inspected before claiming a supported OS passed.
+
+## Initial audit helpers
+
+The original 1.0 evidence collector CLI completed against the skill itself with no collection errors. Real Playwright 1.63.0 and @axe-core/playwright 4.13.0 module loading was checked; an exports metadata bug found then was fixed. Browser capture itself could not complete in the restricted local sandbox. No prospect-site audit, real-user performance pass, screen-reader test or accessibility conformance is claimed by these setup checks.
+
+The Markdown-first and explicit-PowerPoint-approval instructions remain part of the skill. Tool installation and diagnostic browser fixtures do not create an audit PPTX or grant approval for one. Audit quality still depends on target access, evidence, the agent's review and any manual/user-research validation needed.

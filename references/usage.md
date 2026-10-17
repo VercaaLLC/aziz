@@ -1,35 +1,31 @@
 # Installation and usage
 
-The display name is **aziz-WA**; the portable command/identifier is `aziz-wa` because the common Agent Skills format uses lowercase names. The same skill folder serves Claude Code and Codex. Optional `agents/openai.yaml` provides Codex UI metadata. No model API or paid audit account is built in; host model usage is separate.
+For a computer with no developer tools, use the one-command GitHub bootstrap in [setup.md](setup.md). It installs the runtimes, audit/presentation tools, agent software, skill and launcher. Sign-in remains a user action.
 
-Install from the public repository using the [Skills CLI](https://github.com/vercel-labs/skills):
+Open the **aziz-WA** desktop launcher, choose an agent and enter the website URL. A public-site marketing brief is supplied automatically. Detailed Markdown is delivered first, then the agent asks before PowerPoint conversion. Reports live under the installation's `audits` directory.
 
-```bash
-npx skills add VercaaLLC/aziz --skill aziz-wa -g -a claude-code -a codex
-```
-
-Or clone `https://github.com/VercaaLLC/aziz.git` and run from the clone/extracted skill folder:
-
-```bash
-python3 scripts/install.py --agent both
-```
-
-This adds personal symlinks under `~/.claude/skills/aziz-wa` and modern Codex `~/.agents/skills/aziz-wa`. It preserves existing entries and reports permission failures. Keep the source folder in place. Use `--project <repo>` for project-local links. For team/cloud portability, copy the whole skill folder into each repository's `.claude/skills/` and `.agents/skills/` instead of committing links to a personal absolute path. Older/custom clients may use their configured skill root.
-
-Start a new session if the skill is not listed. Without installation, tell either agent to read this file's sibling `../SKILL.md` by absolute path and follow it.
+The display name is **aziz-WA**; its portable identifier is `aziz-wa`. Existing configured agent sessions can still invoke it manually:
 
 Claude Code:
 
 ```text
-/aziz-wa Deeply audit https://example.com and this repository. Deliver the Markdown report, then ask my approval before converting it to PowerPoint. Do not edit application files.
+/aziz-wa Deeply audit https://example.com using public pages only for a marketing prospect report. Deliver the detailed Markdown report, then ask my approval before converting it to PowerPoint.
 ```
 
 Codex:
 
 ```text
-$aziz-wa Deeply audit https://example.com and this repository. Deliver the Markdown report, then ask my approval before converting it to PowerPoint. Do not edit application files.
+$aziz-wa Deeply audit https://example.com using public pages only for a marketing prospect report. Deliver the detailed Markdown report, then ask my approval before converting it to PowerPoint.
 ```
 
-Full coverage needs both source and a usable browser preview/URL. URL-only cannot verify private source or exact dependencies. Offline results cannot establish current freshness. The collector automates npm direct-version metadata; native-tool guidance covers other ecosystems and transitive analysis. A capable agent must inspect source, view screenshots and walk journeys; the helpers alone are not a professional audit.
+For source-aware audits, also provide the repository and local preview. URL-only review cannot verify private source or exact full dependencies. The agent must inspect screenshots/source and walk journeys; collectors alone are not a professional review.
 
-Compatibility references: [Claude Code skills](https://code.claude.com/docs/en/skills), [OpenAI skills workflow](https://developers.openai.com/blog/skills-agents-sdk), [Agent Skills specification](https://agentskills.io/specification).
+If all runtimes/tools already exist and you want only the skill:
+
+```bash
+npx skills add VercaaLLC/aziz --skill aziz-wa -g -a claude-code -a codex
+```
+
+The light Python installer adds links: `python3 scripts/install.py --agent both`. `--copy` avoids symlink privileges and `--project <repo>` targets project-local discovery. Keep linked source folders in place. Team/cloud portability requires copying the whole skill into `.claude/skills/aziz-wa` and `.agents/skills/aziz-wa`, instead of committing personal absolute links. Unknown existing skills are preserved. Open a new agent session if discovery needs refreshing.
+
+Compatibility: [Claude Code](https://code.claude.com/docs/en/skills), [Codex](https://learn.chatgpt.com/docs/build-skills), [Agent Skills](https://agentskills.io/specification).
