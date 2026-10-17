@@ -176,6 +176,34 @@ class AuditEvidenceTests(unittest.TestCase):
         self.assertEqual((project / ".agents/skills/aziz-wa").resolve(), clone)
         self.assertFalse((project / ".claude/skills/aziz").exists())
 
+    def test_copy_install_works_without_symlink_privileges(self):
+        self.write("SKILL.md", "skill")
+        target = self.base / "agent-skill"
+        result = installer.install(self.repo, target, copy=True)
+        self.assertEqual(result["status"], "installed-copy")
+        self.assertFalse(target.is_symlink())
+        self.assertEqual((target / "SKILL.md").read_text(), "skill")
+
+    def test_managed_copy_update_keeps_previous_files_in_backup(self):
+        self.write("SKILL.md", "old")
+        target = self.base / "agent-skill"
+        managed = self.base / "runtime"
+        installer.install(self.repo, target, copy=True, managed_root=managed)
+        self.write("SKILL.md", "new")
+        result = installer.install(self.repo, target, copy=True, update_owned=True, managed_root=managed)
+        self.assertEqual(result["status"], "updated")
+        self.assertEqual((target / "SKILL.md").read_text(), "new")
+        self.assertEqual((Path(result["backup"]) / "SKILL.md").read_text(), "old")
+
+    def test_copy_update_cannot_replace_another_installations_skill(self):
+        self.write("SKILL.md", "old")
+        target = self.base / "agent-skill"
+        installer.install(self.repo, target, copy=True, managed_root=self.base / "owner-a")
+        self.write("SKILL.md", "new")
+        result = installer.install(self.repo, target, copy=True, update_owned=True, managed_root=self.base / "owner-b")
+        self.assertEqual(result["status"], "conflict-preserved")
+        self.assertEqual((target / "SKILL.md").read_text(), "old")
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

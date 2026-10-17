@@ -4,6 +4,11 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import { createRequire } from 'node:module';
 
+// The managed launcher supplies these without requiring users to configure tools.
+if (!process.env.PLAYWRIGHT_BROWSERS_PATH && process.env.AZIZ_WA_HOME) {
+  process.env.PLAYWRIGHT_BROWSERS_PATH = path.join(process.env.AZIZ_WA_HOME, 'browsers');
+}
+
 const args = process.argv.slice(2);
 const opts = {};
 for (let i = 0; i < args.length; i++) {
@@ -36,7 +41,7 @@ let browser;
 let exitCode = 0;
 const safe = value => String(value).replace(/(https?:\/\/)[^/\s@]+@/g, '$1<redacted>@')
   .replace(/([?&](?:token|key|password|secret|auth|code)=)[^&#\s]+/gi, '$1<redacted>');
-const requireTool = createRequire(path.join(path.resolve(opts['tools-dir'] || process.cwd()), '__audit_resolver__.cjs'));
+const requireTool = createRequire(path.join(path.resolve(opts['tools-dir'] || process.env.AZIZ_WA_TOOLS_DIR || process.cwd()), '__audit_resolver__.cjs'));
 async function toolVersion(name) {
   let directory = path.dirname(requireTool.resolve(name));
   for (let depth = 0; depth < 6; depth++) {
