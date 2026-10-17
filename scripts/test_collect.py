@@ -5,6 +5,7 @@ import importlib.util
 import contextlib
 import io
 import json
+import os
 from pathlib import Path
 import tempfile
 import unittest
@@ -47,6 +48,16 @@ class AuditEvidenceTests(unittest.TestCase):
         with patch.object(collector.shutil, "which", return_value=None):
             return collector.collect(self.args)
 
+    def require_symlinks(self):
+        probe = self.base / "symlink-permission-probe"
+        try:
+            probe.symlink_to(self.repo, target_is_directory=True)
+            probe.unlink()
+        except OSError as exc:
+            if os.name == "nt":
+                self.skipTest(f"Windows symlink privilege unavailable; copy installation is tested separately: {exc}")
+            raise
+
     def test_npm_v3_hoisting_and_workspace_override(self):
         self.write("package.json", {"dependencies": {"lib": "^1.0.0"}, "workspaces": ["apps/*"]})
         self.write("apps/web/package.json", {"dependencies": {"lib": "^2.0.0", "shared": "^3"}})
@@ -87,6 +98,7 @@ class AuditEvidenceTests(unittest.TestCase):
         self.assertEqual((self.repo / "package.json").read_bytes(), before)
 
     def test_symlink_and_secret_files_excluded(self):
+        self.require_symlinks()
         outside = self.base / "private"
         outside.mkdir()
         (outside / "package.json").write_text('{"dependencies":{"private-name":"1"}}')
@@ -158,12 +170,14 @@ class AuditEvidenceTests(unittest.TestCase):
         self.assertEqual((target / "keep").read_text(), "keep")
 
     def test_installer_is_idempotent(self):
+        self.require_symlinks()
         target = self.base / "skills" / "aziz-wa"
         self.assertEqual(installer.install(self.repo, target)["status"], "installed")
         self.assertEqual(installer.install(self.repo, target)["status"], "already-installed")
         self.assertEqual(target.resolve(), self.repo)
 
     def test_installation_name_survives_differently_named_github_clone(self):
+        self.require_symlinks()
         clone = self.base / "aziz"
         (clone / "scripts").mkdir(parents=True)
         project = self.base / "project"

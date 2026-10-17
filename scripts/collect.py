@@ -254,7 +254,7 @@ def collect(args):
             for group in GROUPS:
                 for name, declared in data.get(group, {}).items():
                     item = {"name": name, "declared": str(declared), "kind": group,
-                            "workspace": str(path.parent.relative_to(repo)), "ecosystem": "npm",
+                            "workspace": path.parent.relative_to(repo).as_posix(), "ecosystem": "npm",
                             "manifest": rel, "installed": None}
                     item.update(resolve_npm(name, path.parent, repo, lock_cache))
                     report["dependencies"].append(item)
