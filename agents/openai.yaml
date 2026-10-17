@@ -1,0 +1,4 @@
+interface:
+  display_name: "aziz-WA"
+  short_description: "Audit UI, UX, source quality, and library health"
+  default_prompt: "Use $aziz-wa to deeply audit this website and repository, deliver a Markdown report, then ask my approval before converting it to PowerPoint."
