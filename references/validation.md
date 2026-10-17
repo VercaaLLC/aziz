@@ -2,12 +2,14 @@
 
 ## Version 1.1: complete installer
 
+The [clean installation workflow](https://github.com/VercaaLLC/aziz/actions/runs/39021580555) passed all three hosted platforms on 17 October 2026: Windows, macOS and Ubuntu Linux, using commit `563bf95953720f0d8df3db117f6b94f3f450284b`. Each job bootstrapped its own Node.js 24 runtime and managed Python, installed the selected agents and audit/presentation packages, installed Chromium, and passed the executable, library and real Chromium/axe diagnostics. Windows installed skill copies without requiring symlink privileges. These are hosted-runner results; other supported OS versions, architectures and restricted corporate networks were not individually tested.
+
 Local checks on 17 October 2026 (macOS, Node 26, Python 3.14):
 
 - 17 Python tests cover exact npm locks, workspace hoisting, missing/malformed metadata, read-only collection, private data exclusions, failure visibility, light installation, Windows-style copy installation, owner-checked updates and backups.
 - 15 Node tests cover platform paths, argument validation, missing-tool doctor failures, package executable resolution, managed releases/backups, unknown-folder preservation, URL validation, HTTPS/redirect/size restrictions, custom-root launcher execution, desktop-file preservation, side-effect-free plans and checksum verification before stage-two execution. The Unix-specific tests run on macOS/Linux; Windows runs the applicable tests plus its PowerShell parser and complete setup.
 - Bash syntax and ShellCheck pass. JavaScript files pass Node syntax checks. SKILL.md passes the skill-creator frontmatter/scaffold validator.
-- GitHub Actions is configured to parse the PowerShell entry point and run a clean full installation on Windows, macOS and Linux, including actual Chromium/axe diagnostics. See the current Actions run for live results; local unit tests alone do not establish clean-machine success on all platforms.
+- GitHub Actions parses the PowerShell entry point and runs a clean full installation on Windows, macOS and Linux, including actual Chromium/axe diagnostics. The successful run above establishes those hosted-platform results. The 25 published source files were also downloaded from GitHub, compared byte for byte, and all 32 local tests passed from that downloaded copy.
 
 Repeat the local checks:
 
@@ -17,7 +19,7 @@ node --test scripts/test_setup.mjs
 bash -n install.sh
 ```
 
-The local execution sandbox blocks outbound shell downloads and direct Chrome launch, so a live complete installation cannot be certified from this local session. The installer reports incomplete if any runtime/tool/browser check fails. It never claims that failed/skipped checks passed. Cloud installation results are separate evidence and must be inspected before claiming a supported OS passed.
+The local execution sandbox blocks outbound shell downloads and direct Chrome launch; the live installation evidence comes from the linked GitHub Actions run. The installer reports incomplete if any runtime/tool/browser check fails. It never claims that failed/skipped checks passed.
 
 ## Initial audit helpers
 
