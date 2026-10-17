@@ -8,3 +8,12 @@ audit-output/
 .env
 .env.*
 !.env.example
+.aziz-wa-managed.json
+.aziz-wa-install.json
+setup.json
+runtime/
+python-env/
+tools/
+browsers/
+audits/
+backups/

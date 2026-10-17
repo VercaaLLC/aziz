@@ -1,104 +1,100 @@
 # aziz-WA
 
-An open-source website auditing skill for Claude Code and Codex. Review UI, UX, accessibility, code quality, library health, performance, technical SEO, and relevant security/privacy signals in one evidence-based workflow.
+Deep website audits for UI, UX, accessibility, code quality, library health, performance and SEO. Built for Claude Code and Codex, including public-site marketing prospect reports.
 
-**The workflow:** audit deeply → deliver a detailed Markdown file → ask your approval → create a PowerPoint only after approval.
+**Audit → detailed Markdown report → your approval → PowerPoint.**
 
-## Install from GitHub
+## One install, including the requirements
 
-Install for both Claude Code and Codex with the [Skills CLI](https://github.com/vercel-labs/skills):
+You do not need Node.js, npm, Python, Git, Claude Code or Codex installed first. The GitHub installer handles the software setup.
 
-```bash
-npx skills add VercaaLLC/aziz --skill aziz-wa -g -a claude-code -a codex
-```
-
-Or install for one agent:
+**Mac / supported Linux:** open Terminal and paste:
 
 ```bash
-npx skills add VercaaLLC/aziz --skill aziz-wa -g -a claude-code
-npx skills add VercaaLLC/aziz --skill aziz-wa -g -a codex
+curl -fsSL https://raw.githubusercontent.com/VercaaLLC/aziz/main/install.sh | bash
 ```
 
-To install without the Skills CLI, clone the repository into a folder you will keep:
+**Windows:** open PowerShell and paste:
 
-```bash
-git clone https://github.com/VercaaLLC/aziz.git
-cd aziz
-python3 scripts/install.py --agent both
+```powershell
+irm https://raw.githubusercontent.com/VercaaLLC/aziz/main/install.ps1 | iex
 ```
 
-The Python installer creates links under `~/.claude/skills/aziz-wa` and `~/.agents/skills/aziz-wa`. It preserves existing entries. Keep the clone in place because the links point to it. Use `--agent claude` or `--agent codex` to select one client, or `--project /path/to/project` for project-local links. A new agent session may be needed for discovery. [More setup details](references/usage.md).
+This installs:
 
-The display name is **aziz-WA**. Its portable command is lowercase `aziz-wa`, following the Agent Skills naming convention.
+- A private Node.js 24 LTS runtime, npm and managed Python.
+- Claude Code and Codex, so you can choose the agent you use.
+- Chromium, Playwright, axe and Lighthouse for browser/accessibility/performance checks.
+- PowerPoint creation and slide-preview tools: python-pptx, Pillow, PptxGenJS and Marp.
+- The aziz-WA skill, a launcher and a desktop shortcut when your Desktop folder exists.
+
+The installer checks the tools before reporting success. Linux may request your administrator password for browser system libraries. Internet access and a supported OS are required. [Platforms, installation details and troubleshooting](references/setup.md).
+
+**You still sign into the agent yourself.** The skill/installer are free; model accounts and usage are separate. No account credentials are installed, requested by the setup script, or uploaded.
 
 ## Use it
 
-Open the website's source project in your agent and provide its URL or local preview.
+1. Open the **aziz-WA** shortcut on your desktop, or the launcher path printed after setup.
+2. Choose Claude Code or Codex.
+3. Enter the website URL. Sign into the chosen agent if asked.
+4. Let the agent collect evidence and deliver `aziz-WA-audit-report.md`.
+5. Review the report. It asks your approval before creating a `.pptx`.
+
+The launcher supplies a public-site marketing audit request automatically: verified findings, a client-friendly summary and suggested services tied to the evidence. Source/backend/full dependency checks remain explicitly unverified for websites you do not own. It does not submit forms or perform intrusive security tests.
+
+If you already use an agent session, invoke:
 
 Claude Code:
 
 ```text
-/aziz-wa Deeply audit https://example.com and this repository. Deliver the Markdown report, then ask my approval before converting it to PowerPoint. Do not edit application files.
+/aziz-wa Audit https://example.com using public pages only. Deliver the deep Markdown report, then ask my approval before PowerPoint conversion.
 ```
 
 Codex:
 
 ```text
-$aziz-wa Deeply audit https://example.com and this repository. Deliver the Markdown report, then ask my approval before converting it to PowerPoint. Do not edit application files.
+$aziz-wa Audit https://example.com using public pages only. Deliver the deep Markdown report, then ask my approval before PowerPoint conversion.
 ```
 
-You can also ask either agent to read this repository's `SKILL.md` directly and follow it.
+For source-aware audits, open/provide your website repository as well. The display name is **aziz-WA**; the portable identifier/command is lowercase `aziz-wa`.
 
-## What the report covers
+## What gets reviewed
 
-| Area | Review |
+| Area | Coverage |
 | --- | --- |
-| UI | Visual hierarchy, typography, spacing, consistency, responsive layouts and control states |
-| UX | Critical journeys, navigation, forms, feedback, recovery and mobile interaction |
+| UI / UX | Hierarchy, typography, layout, mobile behavior, navigation, journeys, forms and recovery |
 | Accessibility | Keyboard/focus, semantics, contrast, reflow and available automated checks |
-| Code quality | Architecture, state/data flow, error handling, async cleanup, duplication, types and tests |
-| Libraries | Declared/locked versions, available updates, advisories, deprecation, support and upgrade compatibility |
-| Performance | Available loading, runtime and bundle evidence, with lab/field distinctions |
-| Technical SEO | Indexability, metadata, canonicals, robots/sitemaps and relevant structured data |
-| Security/privacy | Relevant observed/source signals within authorized access |
+| Code quality | Representative source architecture, state/data flow, errors, async cleanup, duplication, types and tests when source is available |
+| Libraries | Versions, updates, advisories, deprecation, support and upgrade compatibility when exact metadata is available |
+| Performance / SEO | Measured loading/runtime signals, indexability, metadata, canonicals and relevant technical SEO |
+| Security/privacy | Relevant passive public/source signals within authorized access |
 
-Each finding includes its location, evidence, impact, severity, confidence, suggested fix, rough effort and verification method. The report records sampled routes, states, viewports, source files, tool results and anything that could not be checked.
+Findings include evidence, location, impact, priority, confidence, a remedy and a retest. The report lists what was sampled and what could not be verified. Automated checks do not prove complete accessibility, usability or security. Reports and screenshots stay local unless you choose to share them.
 
-## Deliverables
+## Reports and PowerPoint
 
-- `aziz-WA-audit-report.md`: the detailed primary report, delivered as a file.
-- `audit-findings.json`: structured supporting findings and coverage.
-- Local screenshots and raw tool reports where available.
-- `aziz-WA-audit-report.pptx`: created only after you explicitly approve conversion of the Markdown report.
+The launcher creates a separate folder under the installation's `audits` directory for each website. It contains the Markdown report, structured findings and available evidence. Application files are reviewed without changes unless you request fixes.
 
-Application files are reviewed without changes by default. Request implementation separately if you want fixes applied.
+After approval, the installed presentation tools can generate a real PPTX. The Marp/Chromium fallback also produces slide images for visual review and uses image-based PowerPoint slides. Editable generators are installed too; the agent discloses any unavailable native slide verification. [Presentation workflow](references/powerpoint.md).
 
-## Requirements and limits
+## Updates and diagnostics
 
-The skill is free and MIT-licensed. It requires no paid auditing account or extra model API key; Claude/Codex usage may still cost money.
+Rerun the same GitHub install command to repair or update. Installer-managed files retain backups; unknown existing skills are preserved. Run the printed launcher path followed by `doctor` for runtime/browser checks. [Setup details](references/setup.md).
 
-Python 3.11+ runs the optional repository collector. Browser review uses the host's browser tools or optional Playwright/axe/Lighthouse installations. The helpers do not automatically install dependencies. [Free tool setup and native package-manager adapters](references/execution.md).
+Already have an agent and all required tools? The lightweight skill-only route remains available:
 
-Full coverage needs source access and a usable browser target. URL-only review cannot verify private source or the exact dependency graph. Offline metadata cannot establish current freshness. Automatic lock resolution covers direct npm dependencies; other ecosystems and transitive checks use native tools and agent review.
+```bash
+npx skills add VercaaLLC/aziz --skill aziz-wa -g -a claude-code -a codex
+```
 
-This is an agent skill with evidence collectors. The agent must inspect screenshots/source and walk journeys. Automated checks do not prove usability, accessibility conformance, or absence of vulnerabilities. Missing checks stay explicit.
+That command installs only the skill. The one-command bootstrap above is the full installation.
 
-## Validation and maintenance
+## Development checks
 
 ```bash
 python3 -B scripts/test_collect.py
-node --check scripts/browser-audit.mjs
+node --test scripts/test_setup.mjs
+bash -n install.sh
 ```
 
-See [validation details](references/validation.md) for tested behavior and environment limits, and the [original tool comparison](references/research.md) for research behind the workflow.
-
-For Skills CLI installations, check and update using its supported commands:
-
-```bash
-npx skills check
-npx skills update aziz-wa
-```
-
-For a manual linked clone, update it with `git pull --ff-only`. Review changes before running updated helpers.
-
-Licensed under the [MIT License](LICENSE).
+GitHub Actions checks the installers on Windows, macOS and Linux and runs a clean complete setup. [Validation record](references/validation.md) · [Original research](references/research.md) · [MIT License](LICENSE).

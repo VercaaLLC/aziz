@@ -3,7 +3,7 @@ name: aziz-wa
 description: Run aziz-WA, a deep website audit of UI, UX, accessibility, source code quality, library freshness and vulnerabilities, performance, and technical SEO. Deliver a Markdown report and ask for explicit approval before converting it to PowerPoint. Use for comprehensive website reviews and pre-launch assessments using a URL, repository, or both.
 license: MIT
 metadata:
-  version: "1.0.0"
+  version: "1.1.0"
 ---
 
 # aziz-WA
@@ -11,6 +11,8 @@ metadata:
 The user-facing name is **aziz-WA**. The portable skill identifier and command are `aziz-wa`, following the lowercase Agent Skills naming convention.
 
 Produce a deep professional audit across UI, UX, code quality, library health, accessibility, performance, technical SEO and relevant security/privacy signals. Use free local tools and the host agent's capabilities. This skill and its helpers require no API key or paid audit service; Claude/Codex usage can still cost money. Python 3.11+ runs the repository collector. Browser tools are optional.
+
+The GitHub one-command installer provisions Node.js, managed Python, both agents by default, Chromium, Playwright, axe, Lighthouse and presentation tools. In a managed session, reuse `AZIZ_WA_PYTHON`, `AZIZ_WA_TOOLS_DIR`, `PLAYWRIGHT_BROWSERS_PATH` and `CHROME_PATH`; installation paths/diagnostics are in `$AZIZ_WA_HOME/setup.json`. Use those before proposing another installation. See [setup.md](references/setup.md). Accounts still require user sign-in.
 
 ## Scope and evidence
 
@@ -79,4 +81,4 @@ Show coverage for UI, UX, code quality and libraries as `verified`, `partial`, `
 - Codex: `$aziz-wa Audit https://example.com and this repository.`
 - Without installation: ask either agent to read this `SKILL.md` by absolute path and follow it.
 
-Install with `python3 scripts/install.py --agent both`; `--project <repo>` provides project-local links. Existing skills are never overwritten. See [usage.md](references/usage.md). The same files serve both agents without provider-specific APIs.
+For a computer with no developer tools, use the GitHub `install.sh`/`install.ps1` entry point in [setup.md](references/setup.md). The light `python3 scripts/install.py --agent both` installs only skill links/copies when runtimes already exist; `--project <repo>` targets project-local discovery. Unknown existing skills are preserved; installer-owned copy updates retain backups. See [usage.md](references/usage.md). The same files serve both agents without provider-specific APIs.
