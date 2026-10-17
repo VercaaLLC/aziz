@@ -132,7 +132,13 @@ export async function setup(args = process.argv.slice(2)) {
     });
     await step('Install browser, accessibility, performance, presentation and agent tools', () => {
       fs.mkdirSync(p.tools, { recursive: true });
-      if (!fs.existsSync(path.join(p.tools, 'package.json'))) fs.writeFileSync(path.join(p.tools, 'package.json'), JSON.stringify({ name: 'aziz-wa-local-tools', private: true }));
+      const manifestPath = path.join(p.tools, 'package.json');
+      const manifest = fs.existsSync(manifestPath)
+        ? JSON.parse(fs.readFileSync(manifestPath, 'utf8')) : { name: 'aziz-wa-local-tools', private: true };
+      // Current npm requires explicit approval for dependency setup scripts.
+      // Claude's official postinstall connects its platform-specific native binary.
+      if (state.agents.includes('claude')) manifest.allowScripts = { ...manifest.allowScripts, '@anthropic-ai/claude-code': true };
+      fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
       const packages = ['playwright@latest', '@axe-core/playwright@latest', 'lighthouse@latest', 'pptxgenjs@latest', '@marp-team/marp-cli@latest'];
       if (state.agents.includes('claude')) packages.push('@anthropic-ai/claude-code@latest');
       if (state.agents.includes('codex')) packages.push('@openai/codex@latest');

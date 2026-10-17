@@ -83,10 +83,12 @@ test('audit URL validation rejects embedded credentials and non-web protocols', 
   for (const url of ['file:///tmp/local', 'https://user:secret@example.com', 'javascript:alert(1)']) assert.throws(() => validateUrl(url));
 });
 test('launch prompt retains the exact target as data including shell punctuation', () => {
-  const prompt = buildPrompt('https://example.com/?q=%24%28x%29&mode=a', '/skill folder', '/reports folder');
+  const skill = path.resolve('skill folder');
+  const folder = path.resolve('reports folder');
+  const prompt = buildPrompt('https://example.com/?q=%24%28x%29&mode=a', skill, folder);
   assert.ok(prompt.includes('https://example.com/?q=%24%28x%29&mode=a'));
-  assert.ok(prompt.includes('/skill folder'));
-  assert.ok(prompt.includes('/reports folder'));
+  assert.ok(prompt.includes(path.join(skill, 'SKILL.md')));
+  assert.ok(prompt.includes(folder));
 });
 test('HTTPS downloader rejects plaintext and redirect downgrades', async () => {
   const root = temporary(); const original = globalThis.fetch;

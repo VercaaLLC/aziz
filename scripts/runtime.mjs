@@ -72,7 +72,10 @@ export async function doctor(p, agents, options = {}) {
       const mod = require('@axe-core/playwright');
       const AxeBuilder = mod.default || mod.AxeBuilder || mod;
       browser = await chromium.launch({ headless: true });
-      const page = await browser.newPage();
+      // axe opens an auxiliary page; Playwright's browser.newPage convenience
+      // context only permits its single owned page.
+      const context = await browser.newContext();
+      const page = await context.newPage();
       await page.goto('data:text/html,<html lang="en"><title>aziz-WA setup check</title><main><h1>Ready</h1></main></html>');
       const result = await new AxeBuilder({ page }).analyze();
       if (!result.testEngine?.version) throw new Error('axe did not return a valid result.');
